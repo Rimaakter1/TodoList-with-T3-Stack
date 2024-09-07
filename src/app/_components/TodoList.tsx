@@ -1,18 +1,24 @@
 "use client";
 import { useState } from "react";
+import { number } from "zod";
+interface Todo {
+    text: string;
+    completed: boolean;
+}
+
 
 const TodoList = () => {
 
-    const [todos, setTodos] = useState([]);
-    const [input, setInput] = useState("");
-    const [editTask, setEditTask] = useState(null);
+    const [todos, setTodos] = useState<Todo[]>([]);
+    const [input, setInput] = useState<string>("");
+    const [editTask, setEditTask] = useState<number | null>(null);
 
     // Add or Edit a Todo
     const addOrEditTodo = () => {
         if (!input.trim()) return;
 
-        const newTodo = { text: input, completed: false };
-        if (editTask !== null) {
+        const newTodo: Todo = { text: input, completed: false };
+        if (typeof editTask === "number" && editTask >= 0 && editTask < todos.length) {
             const updatedTodos = [...todos];
             updatedTodos[editTask] = { ...todos[editTask], text: input };
             setTodos(updatedTodos);
@@ -22,6 +28,21 @@ const TodoList = () => {
         }
 
         setInput("");
+    };
+
+
+    // Edit a task
+    const editTodo = (index) => {
+        setInput(todos[index].text);
+        setEditTask(index);
+    };
+
+
+    // Remove a task
+    const removeTodo = (index) => {
+        const updatedTodos = [...todos];
+        updatedTodos.splice(index, 1);
+        setTodos(updatedTodos);
     };
 
     return (
