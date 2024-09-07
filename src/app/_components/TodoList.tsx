@@ -11,46 +11,49 @@ interface Todo {
 }
 
 
-const TodoList = () => {
+const TodoList: React.FC = () => {
 
     const [todos, setTodos] = useState<Todo[]>([]);
     const [input, setInput] = useState<string>("");
     const [editTask, setEditTask] = useState<number | null>(null);
 
     // Add or Edit a Todo
-    const addOrEditTodo = () => {
+    const addOrEditTodo = (): void => {
         if (!input.trim()) return;
 
         const newTodo: Todo = { text: input, completed: false };
         if (typeof editTask === "number" && editTask >= 0 && editTask < todos.length) {
             const updatedTodos = [...todos];
-            updatedTodos[editTask] = { ...todos[editTask], text: input };
+            const todoToUpdate = todos[editTask] || { text: input, completed: false };
+            updatedTodos[editTask] = { ...todoToUpdate, text: input };
+
             setTodos(updatedTodos);
             setEditTask(null);
         } else {
             setTodos([...todos, newTodo]);
         }
-
         setInput("");
     };
 
 
     // Edit a task
-    const editTodo = (index) => {
-        setInput(todos[index].text);
-        setEditTask(index);
+    const editTodo = (index: number): void => {
+        if (todos[index]) {
+            setInput(todos[index].text);
+            setEditTask(index);
+        }
     };
 
 
     // Remove a task
-    const removeTodo = (index) => {
+    const removeTodo = (index: number): void => {
         const updatedTodos = [...todos];
         updatedTodos.splice(index, 1);
         setTodos(updatedTodos);
     };
 
     // Mark task as completed/uncompleted
-    const toggleComplete = (index) => {
+    const toggleComplete = (index: number): void => {
         const updatedTodos = todos.map((todo, i) =>
             i === index ? { ...todo, completed: !todo.completed } : todo
         );
