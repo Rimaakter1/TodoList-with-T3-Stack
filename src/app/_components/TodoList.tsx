@@ -24,7 +24,7 @@ const TodoList: React.FC = () => {
         const newTodo: Todo = { text: input, completed: false };
         if (typeof editTask === "number" && editTask >= 0 && editTask < todos.length) {
             const updatedTodos = [...todos];
-            const todoToUpdate = todos[editTask] || { text: input, completed: false };
+            const todoToUpdate = todos[editTask] ?? { text: input, completed: false };
             updatedTodos[editTask] = { ...todoToUpdate, text: input };
 
             setTodos(updatedTodos);
