@@ -1,4 +1,29 @@
+"use client";
+import { useState } from "react";
+
 const TodoList = () => {
+
+    const [todos, setTodos] = useState([]);
+    const [input, setInput] = useState("");
+    const [editTask, setEditTask] = useState(null);
+
+    // Add or Edit a Todo
+    const addOrEditTodo = () => {
+        if (!input.trim()) return;
+
+        const newTodo = { text: input, completed: false };
+        if (editTask !== null) {
+            const updatedTodos = [...todos];
+            updatedTodos[editTask] = { ...todos[editTask], text: input };
+            setTodos(updatedTodos);
+            setEditTask(null);
+        } else {
+            setTodos([...todos, newTodo]);
+        }
+
+        setInput("");
+    };
+
     return (
 
         <div className="w-full max-w-4xl p-8 bg-white rounded-2xl shadow-xl">
@@ -9,16 +34,16 @@ const TodoList = () => {
             <div className="flex mb-6">
                 <input
                     type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
                     placeholder="Add a new task or edit"
                     className="input w-full py-3 px-4 border border-gray-300 rounded-l-full focus:outline-none focus:ring-0  "
                 />
                 <button
-
-
+                    onClick={addOrEditTodo}
                     className="bg-purple-600 text-white px-6 py-3 rounded-r-full hover:bg-purple-600 transition duration-300 text-4xl"
                 >
-
-
+                    add
                 </button>
             </div>
 
