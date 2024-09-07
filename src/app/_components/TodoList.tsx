@@ -1,6 +1,10 @@
 "use client";
 import { useState } from "react";
-import { number } from "zod";
+import { FiEdit } from "react-icons/fi";
+import { IoMdAdd } from "react-icons/io";
+import { RiDeleteBin5Line } from "react-icons/ri";
+
+
 interface Todo {
     text: string;
     completed: boolean;
@@ -45,6 +49,14 @@ const TodoList = () => {
         setTodos(updatedTodos);
     };
 
+    // Mark task as completed/uncompleted
+    const toggleComplete = (index) => {
+        const updatedTodos = todos.map((todo, i) =>
+            i === index ? { ...todo, completed: !todo.completed } : todo
+        );
+        setTodos(updatedTodos);
+    };
+
     return (
 
         <div className="w-full max-w-4xl p-8 bg-white rounded-2xl shadow-xl">
@@ -64,7 +76,8 @@ const TodoList = () => {
                     onClick={addOrEditTodo}
                     className="bg-purple-600 text-white px-6 py-3 rounded-r-full hover:bg-purple-600 transition duration-300 text-4xl"
                 >
-                    add
+                    {editTask !== null ? <FiEdit />
+                        : <IoMdAdd />}
                 </button>
             </div>
 
@@ -74,7 +87,42 @@ const TodoList = () => {
                     <h2 className="text-xl font-semibold text-gray-700 mb-4">Tasks To Do</h2>
                     <ul className="list-none space-y-4">
 
-                        <p className="text-center text-gray-600">No tasks to do!</p>
+                        {todos.filter((todo) => !todo.completed).length > 0 ? (
+                            todos
+                                .filter((todo) => !todo.completed)
+                                .map((todo, index) => (
+                                    <li
+                                        key={index}
+                                        className="flex justify-between items-center p-4 rounded-xl shadow-lg bg-gray-50 border-l-4 border-purple-500"
+                                    >
+                                        <div className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={todo.completed}
+                                                onChange={() => toggleComplete(index)}
+                                                className="mr-3 w-6 h-6 text-purple-500 rounded focus:ring-purple-600"
+                                            />
+                                            <span className="text-lg text-gray-800">{todo.text}</span>
+                                        </div>
+                                        <div className="flex items-center space-x-4">
+                                            <button
+                                                onClick={() => editTodo(index)}
+                                                className="text-purple-500 hover:text-purple-600 transition duration-300 text-3xl"
+                                            >
+                                                <FiEdit />
+                                            </button>
+                                            <button
+                                                onClick={() => removeTodo(index)}
+                                                className="text-red-500 hover:text-red-600 transition duration-300 text-3xl"
+                                            >
+                                                <RiDeleteBin5Line />
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))
+                        ) : (
+                            <p className="text-center text-gray-600">No tasks to do!</p>
+                        )}
 
                     </ul>
                 </div>
@@ -85,8 +133,36 @@ const TodoList = () => {
                     <ul className="list-none space-y-4">
 
 
-                        <p className="text-center text-gray-600">No completed tasks!</p>
-
+                        {todos.filter((todo) => todo.completed).length > 0 ? (
+                            todos
+                                .filter((todo) => todo.completed)
+                                .map((todo, index) => (
+                                    <li
+                                        key={index}
+                                        className="flex justify-between items-center p-4 rounded-xl shadow-lg bg-green-50 border-l-4 border-green-400"
+                                    >
+                                        <div className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={todo.completed}
+                                                onChange={() => toggleComplete(index)}
+                                                className="mr-3 w-6 h-6 text-green-400 rounded focus:ring-green-400"
+                                            />
+                                            <span className="text-lg line-through text-gray-500">
+                                                {todo.text}
+                                            </span>
+                                        </div>
+                                        <button
+                                            onClick={() => removeTodo(index)}
+                                            className="text-red-400 hover:text-red-600 transition duration-300 text-3xl"
+                                        >
+                                            <RiDeleteBin5Line />
+                                        </button>
+                                    </li>
+                                ))
+                        ) : (
+                            <p className="text-center text-gray-600">No completed tasks!</p>
+                        )}
                     </ul>
                 </div>
             </div>
